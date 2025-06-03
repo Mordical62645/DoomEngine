@@ -47,3 +47,30 @@ Let's start with getting the vertex data: 'VERTEXES'
 After making the screen and displaying the vertex, we need to connect
 the vertices by their appropriate line. In Doom, the line that connects
 two vertices is called Linedef structure.
+
+Binary space partitioning
+    Imagine a one dimensional space that is a straight line 
+    with points that respresent some objects. The location
+    of these objects can be represented as binary tree.
+    ---*-------*---------*---*---*-----*-------- x
+                        player
+                (Enemy2)  |   (Enemy1)
+                    left──├── right
+                                |
+                          left──├── right
+                        (Enemy3)   (Enemy4)
+    this is called a Binary Search Tree
+    Every node has a left and right child:
+        * Left = object is behind the player
+        * Right = object is in front of the player
+
+    Let's give the points or nodes value as their location:
+    ---(-5)-------(-8)---------0---4---6-----12------20-- x
+                                   |
+                                 player
+    <----------------------------------------------------->
+     back                   front      front           back
+     so basically, bsp maps that right is front, while left is back
+
+Things/Thing represent... things... lol:
+    players, monsters, pickups, projectiles

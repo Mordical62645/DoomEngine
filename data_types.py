@@ -1,6 +1,7 @@
-# H - uint16, h - in16, I - unit32, i - int32, c - char
+# H - uint16, h - int16, I - uint32, i - int32, c - char
 
-class Linedef:
+
+class Lindedef:
     # 14 bytes = 2H x 7
     __slots__ = [
         'start_vertex_id',

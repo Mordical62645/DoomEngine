@@ -1,5 +1,6 @@
 from wad_reader import WADReader
 
+
 class WADData:
     LUMP_INDICES = {
         'THINGS': 1, 'LINEDEFS': 2, 'SIDEDEFS': 3, 'VERTEXES': 4, 'SEGS': 5,
@@ -12,24 +13,23 @@ class WADData:
         self.vertexes = self.get_lump_data(
             reader_func=self.reader.read_vertex,
             lump_index=self.map_index + self.LUMP_INDICES['VERTEXES'],
-            num_bytes=4 # num bytes per vertex 
+            num_bytes=4  # num bytes per vertex
         )
         self.linedefs = self.get_lump_data(
             reader_func=self.reader.read_linedef,
             lump_index=self.map_index + self.LUMP_INDICES['LINEDEFS'],
             num_bytes=14
         )
-        [self.print_attrs(i) for i in self.linedefs]
 
         self.reader.close()
-    
+
     @staticmethod
     def print_attrs(obj):
         print()
         for attr in obj.__slots__:
             print(eval(f'obj.{attr}'), end=' ')
 
-    def get_lump_data(self, reader_func, lump_index, num_bytes, header_length = 0):
+    def get_lump_data(self, reader_func, lump_index, num_bytes, header_length=0):
         lump_info = self.reader.directory[lump_index]
         count = lump_info['lump_size'] // num_bytes
         data = []
