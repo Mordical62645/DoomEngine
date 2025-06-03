@@ -1,0 +1,45 @@
+DOOM
+
+Doom was distributesd using a SHAREWARE model. 
+    SHAREWARE is a type of proprietary software 
+    that is initially shared by the owner for trial
+    use at little to no cost.
+
+DOOM.WAD/DOOM1.WAD - this is where the game assets is. 
+    That is the only thing we need to recreate Doom
+    using python
+
+STRUCTURE:
+DoomEngine/
+│
+├── wad/
+│   └── DOOM1.WAD
+│
+├── main.py             # contains the wad file path
+├── wad_data.py         # this will have access to the instance of the engine.  
+└── wad_reader.py       # open the wad file for reading in binary mode  
+
+REQUIREMENTS:
+IDE: VSCode
+Python 3.13.3
+Pygame (wrapper for C language SDL library)
+Numba
+Slade3 for checking WAD contents
+
+A WAD file always starts with a 12-byte header (Ion know what the fuck that is tho)
+
+To get the header, we will need to read 12 bytes.
+    First 4 bytes are ASCII characters indicating the type of WAD file.
+    2 signed integers of 4 bytes each necessary to get the file directory in which
+    we will get access to all file assets
+
+Getting the header will tell us the initial content of the WAD: 
+    {'wad_type': 'IWAD', 'lump_count': 1264, 'init_offset': 4175796}
+
+We can directly check for assets file contents by using Slade3 editor.
+
+Let's start with getting the vertex data: 'VERTEXES'
+    2D x and y coordinates of the map
+    these two coordinates are 16 bit signed integers
+    so we need a method to read 2 bytes as 16 bit numbers
+    we will also have to implement a method to read 8 bit numbers
