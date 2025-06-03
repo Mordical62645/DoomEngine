@@ -10,14 +10,25 @@ DOOM.WAD/DOOM1.WAD - this is where the game assets is.
     using python
 
 STRUCTURE:
-DoomEngine/
+DoomEngine/ # Root directory of the project
 │
-├── wad/
-│   └── DOOM1.WAD
-│
-├── main.py             # contains the wad file path
-├── wad_data.py         # this will have access to the instance of the engine.  
-└── wad_reader.py       # open the wad file for reading in binary mode  
+├── ._pycache__                 # Python bytecode cache directory
+├── .venv                       # Python virtual environment directory
+├── wad/                        # Contains game asset files
+│   └── DOOM1.WAD               # The main Doom WAD file
+├── asset_data.py               # Handles loading and processing asset data from WAD
+├── bsp.py                      # Implements Binary Space Partitioning for map rendering
+├── data_types.py               # Defines custom data structures for map elements and assets
+├── main.py                     # Entry point of the application and main game loop
+├── map_renderer.py             # Responsible for rendering map geometry like walls
+├── notes.txt                   # Project notes and documentation
+├── player.py                   # Manages player state, movement, and controls
+├── README.md                   # Project documentation and setup guide
+├── seg_handler.py              # Likely handles 'segs' created by BSP partitioning
+├── settings.py                 # Contains project configuration settings
+├── view_renderer.py            # Implements the raycasting view rendering
+├── wad_data.py                 # Handles WAD file data structures and directory
+└── wad_reader.py               # Performs low-level binary reading of the WAD file
 
 REQUIREMENTS:
 IDE: VSCode
@@ -76,3 +87,127 @@ Things/Thing represent... things... lol:
     players, monsters, pickups, projectiles
 
 Field of View (FOV)
+    - FOV is the visible area that the player can see at any given moment
+    - In Doom, the default FOV is 90 degrees
+    - FOV is implemented using raycasting technique
+    - The FOV is divided into vertical columns (rays)
+    - Each ray represents a single vertical line on the screen
+    - The number of rays determines the resolution of the rendering
+    - Wider FOV = more fisheye effect, narrower FOV = more zoomed in
+
+Raycasting
+    - Core rendering technique used in Doom
+    - Casts rays from the player's position in different angles
+    - Each ray checks for wall intersections
+    - Distance to wall determines wall height on screen
+    - Key components:
+        1. Player position and angle
+        2. Ray angle calculation
+        3. DDA (Digital Differential Analysis) for wall detection
+        4. Distance calculation
+        5. Wall height calculation
+    - DDA algorithm:
+        - Efficiently steps through grid cells
+        - Calculates next intersection point
+        - Determines if wall is hit
+    - Distance calculation:
+        - Uses Pythagorean theorem
+        - Corrects for fisheye effect
+        - Determines wall height
+
+Walls
+    - Represented as line segments in 2D space
+    - Each wall has:
+        - Start and end vertices
+        - Texture information
+        - Height information
+    - Wall rendering process:
+        1. Calculate wall height based on distance
+        2. Determine which part of texture to display
+        3. Apply perspective correction
+        4. Handle wall clipping
+    - Wall types:
+        - Solid walls (impassable)
+        - Textured walls
+        - Transparent walls (for windows)
+    - Wall collision detection:
+        - Line segment intersection tests
+        - Player-wall collision response
+        - Sliding along walls
+
+Assets and Texture Mapping
+    - Textures stored in WAD file as patches
+    - Texture mapping process:
+        1. Load texture from WAD
+        2. Calculate texture coordinates
+        3. Apply perspective correction
+        4. Map texture to wall segment
+    - Texture features:
+        - Multiple texture layers
+        - Animated textures
+        - Transparent textures
+    - Sprite rendering:
+        - Billboarding technique
+        - Sprite scaling based on distance
+        - Sprite clipping
+    - Asset management:
+        - Texture caching
+        - Memory optimization
+        - Resource loading/unloading
+
+Implementation Considerations:
+    - Use Numba for performance optimization
+    - Implement proper object-oriented design:
+        - Engine class for core functionality
+        - Renderer class for drawing
+        - Player class for movement and controls
+        - Map class for level data
+        - AssetManager class for resource handling
+    - Performance optimizations:
+        - Frustum culling
+        - Level of detail (LOD)
+        - Texture caching
+        - Efficient collision detection
+
+OOP Areas Used:
+- Encapsulation
+- Abstraction
+
+Key Topics Covered:
+- WAD File Structure and Parsing
+    - Understanding the internal layout of the DOOM1.WAD file, including the header, directory, and individual data lumps (sections of game data).
+    - Developing code to read this structure and locate specific lumps containing map geometry, textures, sprites, etc.
+- Binary File Reading
+    - Reading raw bytes directly from the WAD file.
+    - Interpreting sequences of bytes as specific data types like signed integers of different sizes (e.g., 16-bit for vertex coordinates, 32-bit for offsets and counts) according to the WAD format.
+- Data Structures (Vertices & Linedefs)
+    - Implementing Python classes or data structures to represent fundamental map elements.
+    - Vertices are 2D points (x, y coordinates) defining locations in the map.
+    - Linedefs are line segments connecting two vertices, representing the edges of walls and other boundaries.
+- Binary Space Partitioning (BSP)
+    - A tree-like data structure used to divide the 2D map space.
+    - Helps in efficiently determining which parts of the map are visible to the player and in what order they should be rendered.
+    - Assists in optimizing rendering by quickly discarding unseen parts of the map.
+- Raycasting
+    - The core 3D rendering technique used in Doom.
+    - Involves casting imaginary rays from the player's eye through each vertical column of the screen.
+    - Determines the distance to the first wall intersected by each ray to calculate the height of the wall slice to be drawn.
+- Field of View (FOV)
+    - The angle that represents the extent of the game world visible to the player at any given moment.
+    - In raycasting, this determines the range of angles over which rays are cast.
+    - Affects the perceived perspective and how much of the scene is displayed horizontally.
+- Texture Mapping
+    - The process of applying 2D images (textures) onto the surfaces of the rendered 3D geometry (walls).
+    - Involves calculating which part of a texture corresponds to a specific point on a wall slice and drawing the texture data accordingly.
+- Sprite Rendering
+    - Drawing 2D images (sprites) that represent objects like monsters, items, or decorations within the 3D-rendered world.
+    - Sprites are typically billboarded, meaning they always face the player regardless of the player's viewing angle.
+    - Their size is scaled based on their distance from the player to maintain perspective.
+- Collision Detection
+    - Determining when the player's movement path intersects with solid objects, primarily walls.
+    - Prevents the player from walking through geometry.
+    - Often involves checking for intersections between the player's bounding box/point and the linedefs that make up the walls.
+- Performance Optimization Techniques
+    - Methods used to improve the speed and efficiency of the rendering and simulation.
+    - Includes using libraries like Numba for just-in-time compilation of critical code sections.
+    - May also involve techniques like frustum culling (not drawing objects outside the player's view) or other optimizations to reduce the amount of computation needed each frame.
