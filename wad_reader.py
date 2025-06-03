@@ -1,4 +1,5 @@
 import struct # so we can covert read bytes corresponding to the data of the C language data type necessary for Python
+from pygame.math import Vector2 as vec2
 
 class WADReader:
     def __init__(self, wad_path):
@@ -12,7 +13,9 @@ class WADReader:
     # vertex
     def read_vertex(self, offset):
         # 4 bytes = 2h + 2h
-        x = 
+        x = self.read_2_bytes(offset, byte_format='h')
+        y = self.read_2_bytes(offset + 2, byte_format='h')
+        return vec2(x, y)
 
     # Directory
     def read_directory(self):
