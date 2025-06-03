@@ -1,6 +1,7 @@
 from settings import *
 from pygame.math import Vector2 as vec2
 import pygame as pg
+import math
 
 
 class Player:
@@ -30,8 +31,10 @@ class Player:
             self.height += max(-15.0, self.z_vel)
 
     def control(self):
-        speed = PLAYER_SPEED * self.engine.dt
-        rot_speed = PLAYER_ROT_SPEED * self.engine.dt
+        # Apply the speed multiplier from the engine
+        speed = PLAYER_SPEED * self.engine.speed_multiplier * self.engine.dt
+        # Apply the rotation multiplier from the engine
+        rot_speed = PLAYER_ROT_SPEED * self.engine.rotation_multiplier * self.engine.dt
 
         key_state = pg.key.get_pressed()
         if key_state[pg.K_LEFT]:
