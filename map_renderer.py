@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+import random
 
 
 class MapRenderer:
@@ -18,7 +19,20 @@ class MapRenderer:
         # self.draw_vertexes()
         self.draw_player_pos()
         self.draw_node(node_id=self.engine.bsp.root_node_id)
-    
+
+    def get_color(self, seed):
+        random.seed(seed)
+        rnd = random.randrange
+        rng = 100, 256
+        return rnd(*rng), rnd(*rng), rnd(*rng)
+
+    def draw_seg(self, seg, sub_sector_id):
+        v1 = self.vertexes[seg.start_vertex_id]
+        v2 = self.vertexes[seg.end_vertex_id]
+        pg.draw.line(self.engine.screen, self.get_color(sub_sector_id), v1, v2, 4)
+        pg.display.flip()
+        pg.time.wait(10)
+
     def draw_bbox(self, bbox, color):
         x, y = self.remap_x(bbox.left), self.remap_y(bbox.top)
         w, h = self.remap_x(bbox.right) - x, self.remap_y(bbox.bottom) - y

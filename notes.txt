@@ -74,3 +74,5 @@ Binary space partitioning
 
 Things/Thing represent... things... lol:
     players, monsters, pickups, projectiles
+
+Field of View (FOV)
