@@ -43,3 +43,7 @@ Let's start with getting the vertex data: 'VERTEXES'
     these two coordinates are 16 bit signed integers
     so we need a method to read 2 bytes as 16 bit numbers
     we will also have to implement a method to read 8 bit numbers
+
+After making the screen and displaying the vertex, we need to connect
+the vertices by their appropriate line. In Doom, the line that connects
+two vertices is called Linedef structure.

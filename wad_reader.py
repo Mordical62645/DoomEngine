@@ -1,5 +1,6 @@
 import struct # so we can covert read bytes corresponding to the data of the C language data type necessary for Python
 from pygame.math import Vector2 as vec2
+from datatypes import *
 
 class WADReader:
     def __init__(self, wad_path):
@@ -9,7 +10,22 @@ class WADReader:
         print(f"HEADER:\n{self.header}")
         # print("DIRECTORY:")
         # [print('\n', i) for i in self.directory]
-    
+
+    # linedef
+    def read_linedef(self, offset):
+        # 14 bytes  2H x 7
+        read_2_bytes = self.read_2_bytes
+
+        linedef = Linedef()
+        linedef.start_vertex_id = read_2_bytes(offset, byte_format='H')
+        linedef.end_vertex_id = read_2_bytes(offset + 2, byte_format='H')
+        linedef.flags = read_2_bytes(offset + 4, byte_format='H')
+        linedef.line_type = read_2_bytes(offset + 6, byte_format='H')
+        linedef.sector_tag = read_2_bytes(offset + 8, byte_format='H')
+        linedef.front_sidedef_id = read_2_bytes(offset + 10, byte_format='H')
+        linedef.back_sidedef_id = read_2_bytes(offset + 12, byte_format='H')
+        return linedef
+
     # vertex
     def read_vertex(self, offset):
         # 4 bytes = 2h + 2h
