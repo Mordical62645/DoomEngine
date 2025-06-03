@@ -20,12 +20,26 @@ class DoomEngine:
         # Calculate the actual speed multiplier
         self.speed_multiplier = player_speed / 50.0
         self.rotation_multiplier = rotation_sensitivity / 50.0
+        self.current_map = 'E1M1'  # Track current map
         self.on_init()
 
     def on_init(self):
-        self.wad_data = WADData(self, map_name='E1M1')
+        self.wad_data = WADData(self, map_name=self.current_map)
         self.map_renderer = MapRenderer(self)
         self.player = Player(self)
+        self.bsp = BSP(self)
+        self.seg_handler = SegHandler(self)
+        self.view_renderer = ViewRenderer(self)
+
+    def change_map(self, map_name):
+        """Change to a different map in the WAD file."""
+        self.current_map = map_name
+        # Reinitialize WAD data with new map
+        self.wad_data = WADData(self, map_name=map_name)
+        # Reset player position and angle
+        self.player = Player(self)
+        # Reinitialize other components
+        self.map_renderer = MapRenderer(self)
         self.bsp = BSP(self)
         self.seg_handler = SegHandler(self)
         self.view_renderer = ViewRenderer(self)
@@ -48,6 +62,13 @@ class DoomEngine:
                 self.running = False
                 pg.quit()
                 sys.exit()
+            elif e.type == pg.KEYDOWN:
+                # Map switching with number keys 1-9
+                if pg.K_1 <= e.key <= pg.K_9:
+                    map_num = e.key - pg.K_1 + 1
+                    new_map = f'E1M{map_num}'
+                    print(f"Switching to map: {new_map}")
+                    self.change_map(new_map)
 
     def run(self):
         while self.running:
