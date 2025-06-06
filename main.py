@@ -70,6 +70,10 @@ class DoomEngine:
                     print(f"Switching to map: {new_map}")
                     self.change_map(new_map)
 
+                elif e.key == pg.K_ESCAPE:
+                    sys.exit()
+                    pg.quit()
+
     def run(self):
         while self.running:
             self.check_events()
