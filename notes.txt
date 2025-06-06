@@ -19,6 +19,8 @@ DoomEngine/ # Root directory of the project
 ├── asset_data.py               # Handles loading and processing asset data from WAD
 ├── bsp.py                      # Implements Binary Space Partitioning for map rendering
 ├── data_types.py               # Defines custom data structures for map elements and assets
+├── GameLauncher.java           # Launcher made with java
+├── launch_game.py              # similar to `main.py` but where GameLauncher pass its arguments
 ├── main.py                     # Entry point of the application and main game loop
 ├── map_renderer.py             # Responsible for rendering map geometry like walls
 ├── notes.txt                   # Project notes and documentation
