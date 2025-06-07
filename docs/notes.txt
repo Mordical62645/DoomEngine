@@ -214,5 +214,3 @@ Key Topics Covered:
     - Includes using libraries like Numba for just-in-time compilation of critical code sections.
     - May also involve techniques like frustum culling (not drawing objects outside the player's view) or other optimizations to reduce the amount of computation needed each frame.
 
-
-    
