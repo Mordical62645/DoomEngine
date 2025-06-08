@@ -23,6 +23,10 @@ class ViewRenderer:
         self.sky_tex = self.asset_data.sky_tex
         self.sky_inv_scale = 160 / HEIGHT
         self.sky_tex_alt = 100
+        
+        # Enable hardware acceleration hints
+        pg.display.set_allow_screensaver(False)
+        pg.event.set_allowed([pg.QUIT, pg.KEYDOWN, pg.KEYUP])
 
     def draw_sprite(self):
         img = self.sprites['SHTGA0']
@@ -52,7 +56,7 @@ class ViewRenderer:
             self.draw_column(self.framebuffer, x, y1, y2, color)
 
     @staticmethod
-    @njit
+    @njit(fastmath=True, cache=True)
     def draw_column(framebuffer, x, y1, y2, color):
         for iy in range(y1, y2 + 1):
             framebuffer[x, iy] = color
@@ -100,7 +104,7 @@ class ViewRenderer:
             screen[x, iy] = col
 
     @staticmethod
-    @njit(fastmath=True)
+    @njit(fastmath=True, cache=True, parallel=True)
     def draw_wall_col(framebuffer, tex, tex_col, x, y1, y2, tex_alt, inv_scale, light_level):
         if y1 < y2:
             tex_w, tex_h = len(tex), len(tex[0])

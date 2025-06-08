@@ -65,8 +65,8 @@ public class GameLauncher extends JFrame {
                 return;
             }
 
-            // Get the current directory
-            File currentDir = new File(".");
+            // Get the absolute path to the current directory
+            File currentDir = new File(".").getAbsoluteFile();
             String pythonCommand = "python";
             
             // Try to use python3 if python doesn't work
@@ -82,7 +82,8 @@ public class GameLauncher extends JFrame {
 
             // Create the command to run the Python script
             ProcessBuilder processBuilder = new ProcessBuilder(
-                pythonCommand, "launch_game.py",
+                pythonCommand, 
+                currentDir.getAbsolutePath() + File.separator + "launch_game.py",
                 "--player-speed", playerSpeed,
                 "--rotation-speed", rotationSpeed
             );
@@ -94,14 +95,28 @@ public class GameLauncher extends JFrame {
             processBuilder.redirectErrorStream(true);
             
             // Start the process
-            processBuilder.start();
+            Process process = processBuilder.start();
+            
+            // Read the output in a separate thread
+            new Thread(() -> {
+                try {
+                    java.io.BufferedReader reader = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(process.getInputStream()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
             
             // Close the launcher window
             dispose();
             
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this,
-                "Error launching game: " + ex.getMessage(),
+                "Error launching game: " + ex.getMessage() + "\nPlease make sure Python is installed and in your PATH.",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }

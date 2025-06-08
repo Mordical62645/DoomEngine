@@ -34,22 +34,33 @@ class DoomEngine:
 
     def change_map(self, map_name):
         """Change to a different map in the WAD file."""
-        self.current_map = map_name
-        # Reinitialize WAD data with new map
-        self.wad_data = WADData(self, map_name=map_name)
-        # Reset player position and angle
-        self.player = Player(self)
-        # Reinitialize other components
-        self.map_renderer = MapRenderer(self)
-        self.bsp = BSP(self)
-        self.seg_handler = SegHandler(self)
-        self.view_renderer = ViewRenderer(self)
+        try:
+            print(f"Attempting to change map to: {map_name}")
+            self.current_map = map_name
+            # Reinitialize WAD data with new map
+            self.wad_data = WADData(self, map_name=map_name)
+            # Reset player position and angle
+            self.player = Player(self)
+            # Reinitialize other components
+            self.map_renderer = MapRenderer(self)
+            self.bsp = BSP(self)
+            self.seg_handler = SegHandler(self)
+            self.view_renderer = ViewRenderer(self)
+            print(f"Successfully changed map to: {map_name}")
+        except Exception as e:
+            print(f"Error changing map: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            # Revert to previous map if change failed
+            self.current_map = self.current_map
+            self.wad_data = WADData(self, map_name=self.current_map)
 
     def update(self):
         self.player.update()
         self.seg_handler.update()
         self.bsp.update()
-        self.dt = self.clock.tick()
+        # Cap frame rate to 60 FPS
+        self.dt = self.clock.tick(60)
         pg.display.set_caption(f'{self.clock.get_fps() :.1f}')
 
     def draw(self):
